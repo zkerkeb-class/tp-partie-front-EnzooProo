@@ -1,21 +1,21 @@
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import PokeList from './components/pokelist';
+import PokeDetail from './components/pokeDetail';
+import AddPokemon from './components/addPokemon';
 
-import Title from './components/title'
-import Counter from './components/counter'
-import PokeList from './components/pokelist'
 function App() {
-
   return (
-    <div>
-      {/* <Title  label="Titre 1" />
-      <Title label="Titre 2" />
-      <Title label="Titre 3" />
-      <Title label="Titre 4" />
-      <Title/> */}
-      <Counter/>
-      <PokeList/>
-    </div>
-  )
+    <Router>
+      <div className="app-root-wrapper">
+        <Routes>
+          <Route path="/" element={<PokeList />} />
+          <Route path="/pokemon/:id" element={<PokeDetail />} />
+          <Route path="/add" element={<AddPokemon />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;
