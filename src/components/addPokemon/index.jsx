@@ -53,6 +53,19 @@ const AddPokemon = () => {
         Speed: "Vitesse"
     };
 
+    const pokemonSprites = [
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+    ];
+
     return (
         <div className="add-page">
             <Link to="/" className="back-link"><ArrowLeft size={20} /> Retour au Pokedex</Link>
@@ -91,14 +104,20 @@ const AddPokemon = () => {
                                 />
                             </div>
                         </div>
-                        <div className="form-group" style={{marginTop: '20px'}}>
-                            <label style={{display: 'flex', alignItems: 'center', gap: '8px'}}><ImageIcon size={16} /> URL de l'Hologramme (Image)</label>
-                            <input 
-                                type="text" 
-                                placeholder="https://raw.githubusercontent.com/..."
-                                value={formData.image} 
-                                onChange={e => setFormData({...formData, image: e.target.value})}
-                            />
+                        
+                        <div className="sprite-selector-container">
+                            <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase'}}><ImageIcon size={16} /> Choisir un Hologramme</label>
+                            <div className="sprite-grid">
+                                {pokemonSprites.map((url) => (
+                                    <div 
+                                        key={url}
+                                        className={`sprite-option ${formData.image === url ? 'selected' : ''}`}
+                                        onClick={() => setFormData({...formData, image: url})}
+                                    >
+                                        <img src={url} alt="Pokemon sprite option" />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                     
