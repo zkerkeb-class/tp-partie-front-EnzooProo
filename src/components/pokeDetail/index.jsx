@@ -1,22 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Edit, Trash2, Save, X, Shield, Sword, Zap, Heart, Activity, Wind, Sparkles } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Shield, Sword, Zap, Heart, Activity, Wind, Sparkles } from "lucide-react";
 
 const PokeDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [pokemon, setPokemon] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [isEditing, setIsEditing] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [formData, setFormData] = useState(null);
 
     useEffect(() => {
         fetch(`http://localhost:3000/pokemons/${id}`)
             .then(res => res.json())
             .then(data => {
                 setPokemon(data);
-                setFormData(data);
                 setLoading(false);
             })
             .catch(err => {
@@ -24,23 +21,6 @@ const PokeDetail = () => {
                 setLoading(false);
             });
     }, [id]);
-
-    const handleSave = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/pokemons/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok) {
-                const updated = await response.json();
-                setPokemon(updated);
-                setIsEditing(false);
-            }
-        } catch (error) {
-            console.error("Error updating:", error);
-        }
-    };
 
     const handleDelete = async () => {
         try {
@@ -100,41 +80,28 @@ const PokeDetail = () => {
 
                     <div className="info-column">
                         <div className="pokedex-header">
-                            {isEditing ? (
-                                <div className="edit-fields">
-                                    <input 
-                                        type="text" 
-                                        className="edit-title-input"
-                                        value={formData.name.french} 
-                                        onChange={e => setFormData({...formData, name: {...formData.name, french: e.target.value}})}
-                                    />
-                                </div>
-                            ) : (
-                                <>
-                                    <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-                                        <h1 className="pokedex-name">{pokemon.name.french}</h1>
-                                        <Sparkles size={24} color={mainTypeColor} className="pulse-icon" />
-                                    </div>
-                                    <div className="pokedex-subnames">
-                                        <span className="lang-tag">EN</span> {pokemon.name.english} 
-                                        <span className="separator">/</span> 
-                                        <span className="lang-tag">JP</span> {pokemon.name.japanese}
-                                    </div>
-                                    <div className="types-row">
-                                        {pokemon.type.map(t => (
-                                            <span key={t} className={`type-badge-modern ${t.toLowerCase()}`} style={{background: typeColorMap[t]}}>
-                                                {t}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </>
-                            )}
+                            <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                                <h1 className="pokedex-name">{pokemon.name.french}</h1>
+                                <Sparkles size={24} color={mainTypeColor} className="pulse-icon" />
+                            </div>
+                            <div className="pokedex-subnames">
+                                <span className="lang-tag">EN</span> {pokemon.name.english} 
+                                <span className="separator">/</span> 
+                                <span className="lang-tag">JP</span> {pokemon.name.japanese}
+                            </div>
+                            <div className="types-row">
+                                {pokemon.type.map(t => (
+                                    <span key={t} className={`type-badge-modern ${t.toLowerCase()}`} style={{background: typeColorMap[t]}}>
+                                        {t}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
 
                         <div className="stats-analysis">
                             <h3 className="section-title">ANALYSE DES CAPACITÉS</h3>
                             <div className="stats-grid-modern">
-                                {Object.entries(isEditing ? formData.base : pokemon.base).map(([key, value]) => (
+                                {Object.entries(pokemon.base).map(([key, value]) => (
                                     <div key={key} className="stat-card-modern">
                                         <div className="stat-header-modern">
                                             <span className="stat-icon-wrapper" style={{color: statsColors[key]}}>{statIcons[key]}</span>
@@ -157,17 +124,8 @@ const PokeDetail = () => {
                         </div>
 
                         <div className="pokedex-actions">
-                            {isEditing ? (
-                                <>
-                                    <button onClick={handleSave} className="pokedex-btn btn-save"><Save size={18} /> CONFIRMER</button>
-                                    <button onClick={() => setIsEditing(false)} className="pokedex-btn btn-cancel"><X size={18} /> ANNULER</button>
-                                </>
-                            ) : (
-                                <>
-                                    <button onClick={() => setIsEditing(true)} className="pokedex-btn btn-modify"><Edit size={18} /> MODIFIER DATA</button>
-                                    <button onClick={() => setShowDeleteModal(true)} className="pokedex-btn btn-purge"><Trash2 size={18} /> PURGER ENTRÉE</button>
-                                </>
-                            )}
+                            <button onClick={() => navigate(`/edit/${id}`)} className="pokedex-btn btn-modify"><Edit size={18} /> MODIFIER DATA</button>
+                            <button onClick={() => setShowDeleteModal(true)} className="pokedex-btn btn-purge"><Trash2 size={18} /> PURGER ENTRÉE</button>
                         </div>
                     </div>
                 </div>
