@@ -108,18 +108,23 @@ const AddPokemon = () => {
                         </h3>
                         <div className="stats-input-grid">
                             {Object.entries(formData.base).map(([key, value]) => (
-                                <div key={key} className="form-group">
-                                    <label>{statLabels[key] || key}</label>
-                                    <input 
-                                        type="number" 
-                                        min="0"
-                                        max="255"
-                                        value={value} 
-                                        onChange={e => setFormData({
-                                            ...formData, 
-                                            base: {...formData.base, [key]: parseInt(e.target.value) || 0}
-                                        })}
-                                    />
+                                <div key={key} className="stat-slider-row">
+                                    <div className="stat-header">
+                                        <label>{statLabels[key] || key}</label>
+                                        <span className="stat-value">{value}</span>
+                                    </div>
+                                    <div className="slider-container">
+                                        <input 
+                                            type="range" 
+                                            min="0"
+                                            max="255"
+                                            value={value} 
+                                            onChange={e => setFormData({
+                                                ...formData, 
+                                                base: {...formData.base, [key]: parseInt(e.target.value) || 0}
+                                            })}
+                                        />
+                                    </div>
                                 </div>
                             ))}
                         </div>
