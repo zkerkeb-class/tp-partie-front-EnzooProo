@@ -72,7 +72,16 @@ const PokeDetail = () => {
                 <div className="detail-grid">
                     <div className="image-column pokedex-view">
                         <div className="scan-line" style={{background: `linear-gradient(to bottom, transparent, ${mainTypeColor}44, transparent)`}} />
-                        <img src={pokemon.image} alt={pokemon.name.french} className="pokedex-sprite" />
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '100%',
+                            height: '100%',
+                            marginBottom: '20px'
+                        }}>
+                            <img src={pokemon.image} alt={pokemon.name.french} className="pokedex-sprite" style={{maxWidth: '100%', height: 'auto'}} />
+                        </div>
                         <div className="pokedex-id-badge" style={{background: mainTypeColor}}>
                             SPECIES #{String(pokemon.id).padStart(3, '0')}
                         </div>

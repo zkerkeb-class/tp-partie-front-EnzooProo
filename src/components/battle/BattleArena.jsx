@@ -1,23 +1,33 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import useBattleLogic from "./useBattleLogic";
-import { Heart, Sword, Shield, Zap, RefreshCcw, Home, Sparkles } from "lucide-react";
+import { Zap, Sword, Heart, Sparkles, Home, RefreshCcw } from "lucide-react";
+import "./BattleArena.css";
+import battleBgImage from "../../assets/image_back.png";
 
-const HealthBar = ({ hp, maxHp, label, color = "#10b981" }) => {
-    const percentage = (hp / maxHp) * 100;
+const HUD = ({ pokemon, currentHP, maxHP, side }) => {
+    const percentage = (currentHP / maxHP) * 100;
     const barColor = percentage > 50 ? "#10b981" : percentage > 20 ? "#f97316" : "#ef4444";
     
+    // Style inline pour ajuster le positionnement du HUD joueur
+    const hudStyle = side === 'player' ? { bottom: '20px', top: 'auto' } : {};
+    
     return (
-        <div className="battle-hp-container">
-            <div className="hp-header">
-                <span className="hp-label">{label}</span>
-                <span className="hp-numeric">{hp} / {maxHp}</span>
+        <div className={`battle-hud ${side}`} style={hudStyle}>
+            <div className="hud-header">
+                <span className="hud-name">{pokemon.name.french}</span>
+                <span className="hud-level">Lv. 50</span>
             </div>
-            <div className="hp-bar-bg">
+            <div className="hp-bar-wrapper">
                 <div 
-                    className="hp-bar-fill" 
-                    style={{ width: `${percentage}%`, background: barColor }}
+                    className="hp-bar-fill-neon" 
+                    style={{ 
+                        width: `${percentage}%`, 
+                        backgroundColor: barColor,
+                        boxShadow: `0 0 10px ${barColor}` 
+                    }}
                 ></div>
             </div>
+            <div className="hp-text">{currentHP} / {maxHP} HP</div>
         </div>
     );
 };
@@ -25,7 +35,10 @@ const HealthBar = ({ hp, maxHp, label, color = "#10b981" }) => {
 const BattleArena = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { playerPokemon, cpuPokemon, arena } = location.state || {};
+    const { playerPokemon, cpuPokemon, selectedArenaImage } = location.state || {};
+    
+    // Utilisation de l'image passée via le state ou fallback
+    const bgImage = selectedArenaImage || battleBgImage;
 
     const {
         playerHP,
@@ -41,102 +54,107 @@ const BattleArena = () => {
     } = useBattleLogic(playerPokemon, cpuPokemon);
 
     if (!playerPokemon || !cpuPokemon) {
-        return <div className="mini-loader">ERREUR DE CHARGEMENT DU COMBAT...</div>;
+        return (
+            <div className="battle-arena-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
+                <div className="win-text">CHARGEMENT DU COMBAT...</div>
+            </div>
+        );
     }
 
     return (
-        <div className="battle-arena-page" style={{ backgroundImage: arena.bg, backgroundSize: 'cover' }}>
-            {animating.flash && <div className="battle-flash" />}
-            
-            <div className="battle-stage">
-                {/* OPPONENT (Top Right) */}
-                <div className={`pokemon-platform cpu-platform ${animating.cpu === 'shake' ? 'shake' : ''} ${animating.cpu === 'thrust' ? 'attack-thrust-reverse' : ''}`}>
-                    <div className="battle-info-card opponent-info">
-                        <h3>{cpuPokemon.name.french} <span className="lvl">Lvl 50</span></h3>
-                        <HealthBar hp={cpuHP} maxHp={maxCpuHP} label="HP" />
-                    </div>
-                    <img src={cpuPokemon.image} alt="Opponent" className="battle-sprite cpu-sprite" />
-                    <div className="platform-base"></div>
+        <div className="battle-arena-container">
+            {animating.flash && <div className="battle-flash-overlay" />}
+
+            {/* --- BATTLE SCENE --- */}
+            <div className="battle-scene" style={{ 
+                background: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${bgImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center bottom',
+                backgroundRepeat: 'no-repeat'
+            }}>
+                {/* HUDs */}
+                <HUD pokemon={cpuPokemon} currentHP={cpuHP} maxHP={maxCpuHP} side="opponent" />
+                <HUD pokemon={playerPokemon} currentHP={playerHP} maxHP={maxPlayerHP} side="player" />
+
+                {/* Opponent Platform & Sprite */}
+                <div className="holo-platform opponent"></div>
+                <div className={`sprite-container opponent ${animating.cpu === 'shake' ? 'shake-anim' : ''} ${animating.cpu === 'thrust' ? 'thrust-reverse-anim' : ''}`}>
+                    <img 
+                        src={cpuPokemon.image} 
+                        alt={cpuPokemon.name.french} 
+                        className="battle-pokemon floating" 
+                    />
                 </div>
 
-                {/* PLAYER (Bottom Left) */}
-                <div className={`pokemon-platform player-platform ${animating.player === 'shake' ? 'shake' : ''} ${animating.player === 'thrust' ? 'attack-thrust' : ''}`}>
-                    <img src={playerPokemon.image} alt="Player" className="battle-sprite player-sprite" />
-                    <div className="platform-base"></div>
-                    <div className="battle-info-card player-info">
-                        <h3>{playerPokemon.name.french} <span className="lvl">Lvl 50</span></h3>
-                        <HealthBar hp={playerHP} maxHp={maxPlayerHP} label="HP" />
-                    </div>
-                </div>
-            </div>
-
-            {/* BATTLE CONTROLS & LOG */}
-            <div className="battle-interface">
-                <div className="battle-log-box">
-                    <p key={battleLog}>{battleLog}</p>
-                </div>
-
-                <div className="battle-menu">
-                    {!isFinished ? (
-                        <div className="action-grid">
-                            <button 
-                                className="action-btn" 
-                                disabled={!isPlayerTurn}
-                                onClick={() => playerAction('QUICK')}
-                            >
-                                <Zap size={18} /> VIVE-ATTAQUE
-                            </button>
-                            <button 
-                                className="action-btn heavy" 
-                                disabled={!isPlayerTurn}
-                                onClick={() => playerAction('HEAVY')}
-                            >
-                                <Sword size={18} /> ATTAQUE LOURDE
-                            </button>
-                            <button 
-                                className="action-btn heal" 
-                                disabled={!isPlayerTurn}
-                                onClick={() => playerAction('HEAL')}
-                            >
-                                <Heart size={18} /> SOIN (MAX 30%)
-                            </button>
-                            <button 
-                                className="action-btn special" 
-                                disabled={!isPlayerTurn}
-                                onClick={() => playerAction('SPECIAL')}
-                            >
-                                <Sparkles size={18} /> SPÉCIAL
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="end-game-menu">
-                            <div className={`victory-banner ${winner === 'PLAYER' ? 'win' : 'lose'}`}>
-                                {winner === 'PLAYER' ? 'VICTOIRE !' : 'DÉFAITE...'}
-                            </div>
-                            <div style={{display: 'flex', gap: '20px'}}>
-                                <button className="pokedex-btn" onClick={() => navigate('/battle-setup')}><RefreshCcw /> REJOUER</button>
-                                <button className="pokedex-btn" onClick={() => navigate('/')}><Home /> QUITTER</button>
-                            </div>
-                        </div>
-                    )}
+                {/* Player Platform & Sprite */}
+                <div className="holo-platform player"></div>
+                <div className={`sprite-container player ${animating.player === 'shake' ? 'shake-anim' : ''} ${animating.player === 'thrust' ? 'thrust-anim' : ''}`}>
+                    <img 
+                        src={playerPokemon.image} 
+                        alt={playerPokemon.name.french} 
+                        className="battle-pokemon floating" 
+                        style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.8))' }}
+                    />
                 </div>
             </div>
 
-            {/* Modal for Victory/Defeat */}
+            {/* --- COMMAND MENU --- */}
+            <div className="battle-menu-container">
+                <div className="dialog-box">
+                    {battleLog}
+                </div>
+
+                <div className="actions-grid-cyber">
+                    <button 
+                        className="cyber-btn attack" 
+                        disabled={!isPlayerTurn || isFinished}
+                        onClick={() => playerAction('QUICK')}
+                    >
+                        <Zap size={16} /> Vive-Attaque
+                    </button>
+                    <button 
+                        className="cyber-btn heavy" 
+                        disabled={!isPlayerTurn || isFinished}
+                        onClick={() => playerAction('HEAVY')}
+                    >
+                        <Sword size={16} /> Attaque Lourde
+                    </button>
+                    <button 
+                        className="cyber-btn heal" 
+                        disabled={!isPlayerTurn || isFinished}
+                        onClick={() => playerAction('HEAL')}
+                    >
+                        <Heart size={16} /> Récupération
+                    </button>
+                    <button 
+                        className="cyber-btn special" 
+                        disabled={!isPlayerTurn || isFinished}
+                        onClick={() => playerAction('SPECIAL')}
+                    >
+                        <Sparkles size={16} /> Ultra-Combo
+                    </button>
+                </div>
+            </div>
+
+            {/* --- END SCREEN OVERLAY --- */}
             {isFinished && (
-                <div className="modal-overlay-pokedex">
-                    <div className="modal-content-pokedex" style={{border: `2px solid ${winner === 'PLAYER' ? '#10b981' : '#ef4444'}`}}>
-                        <h2 style={{color: winner === 'PLAYER' ? '#10b981' : '#ef4444', fontSize: '3rem'}}>
-                            {winner === 'PLAYER' ? 'FÉLICITATIONS !' : 'DOMMAGE...'}
-                        </h2>
-                        <p style={{fontSize: '1.2rem', marginBottom: '30px'}}>
+                <div className="battle-end-overlay">
+                    <div className="end-card-cyber">
+                        <div className={`end-title ${winner === 'PLAYER' ? 'win-text' : 'lose-text'}`}>
+                            {winner === 'PLAYER' ? 'Victory' : 'Defeat'}
+                        </div>
+                        <p style={{ color: '#94a3b8', fontSize: '1.1rem' }}>
                             {winner === 'PLAYER' 
-                                ? `Votre ${playerPokemon.name.french} a terrassé l'adversaire !` 
-                                : `Votre ${playerPokemon.name.french} a succombé au combat.`}
+                                ? `${playerPokemon.name.french} a remporté le tournoi Cyber-League !` 
+                                : `${playerPokemon.name.french} a été éliminé du tournoi.`}
                         </p>
-                        <div className="modal-buttons">
-                            <button className="pokedex-btn" onClick={() => navigate('/battle-setup')}>RECOMMENCER</button>
-                            <button className="pokedex-btn btn-purge" onClick={() => navigate('/')}>QUITTER</button>
+                        <div className="end-actions">
+                            <button className="pokedex-btn-cyber" onClick={() => navigate('/battle-setup')}>
+                                <RefreshCcw size={18} style={{ verticalAlign: 'middle', marginRight: '8px' }} /> REJOUER
+                            </button>
+                            <button className="pokedex-btn-cyber" onClick={() => navigate('/')}>
+                                <Home size={18} style={{ verticalAlign: 'middle', marginRight: '8px' }} /> QUITTER
+                            </button>
                         </div>
                     </div>
                 </div>

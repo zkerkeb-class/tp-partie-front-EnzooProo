@@ -17,7 +17,7 @@ If you are developing a production application, we recommend using TypeScript wi
 
 # Video Youtube
 
-Lien : https://www.youtube.com/watch?v=AHKb-BNEEA4
+Lien : https://youtu.be/787SnpTFsR0?si=fnvDg7PjUd_2-WnX
 
 # Amélioration 
 

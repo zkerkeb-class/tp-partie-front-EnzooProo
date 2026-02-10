@@ -136,6 +136,26 @@ const AddPokemon = () => {
                         
                         <div className="sprite-selector-container">
                             <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase'}}><ImageIcon size={16} /> Choisir un Hologramme</label>
+                            
+                            {/* Preview image */}
+                            {formData.image && (
+                                <img 
+                                    src={formData.image} 
+                                    alt="Prévisualisation" 
+                                    style={{
+                                        width: '200px',
+                                        height: '200px',
+                                        objectFit: 'contain',
+                                        borderRadius: '12px',
+                                        border: '3px solid #3b82f6',
+                                        display: 'block',
+                                        margin: '20px auto',
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                        boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)'
+                                    }}
+                                />
+                            )}
+
                             <div className="sprite-grid">
                                 {pokemonSprites.slice(0, visibleCount).map((url) => (
                                     <div 

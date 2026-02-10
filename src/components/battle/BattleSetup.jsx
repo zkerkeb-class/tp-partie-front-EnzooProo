@@ -2,11 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Sword, Globe, Users, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 
+import stadiumBg from "../../assets/image_back.png";
+import forestBg from "../../assets/image_back2.png";
+import volcanoBg from "../../assets/image_back3.png";
+import oceanBg from "../../assets/image_back4.png";
+
 const arenas = [
-    { id: 'stadium', name: 'Stade de la Ligue', color: '#3b82f6', bg: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2070&auto=format&fit=crop)' },
-    { id: 'forest', name: 'Forêt de Jade', color: '#10b981', bg: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071&auto=format&fit=crop)' },
-    { id: 'volcano', name: 'Mont Braise', color: '#ef4444', bg: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(https://images.unsplash.com/photo-1461339841210-184c821f27ad?q=80&w=1974&auto=format&fit=crop)' },
-    { id: 'ocean', name: 'Îles Écume', color: '#06b6d4', bg: 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(https://images.unsplash.com/photo-1505118380757-91f5f45d8de4?q=80&w=2000&auto=format&fit=crop)' }
+    { id: 'stadium', name: 'Stade de la Ligue', color: '#3b82f6', bgImage: stadiumBg },
+    { id: 'forest', name: 'Forêt de Jade', color: '#10b981', bgImage: forestBg },
+    { id: 'volcano', name: 'Mont Braise', color: '#ef4444', bgImage: volcanoBg },
+    { id: 'ocean', name: 'Îles Écume', color: '#06b6d4', bgImage: oceanBg }
 ];
 
 const BattleSetup = () => {
@@ -59,7 +64,7 @@ const BattleSetup = () => {
             state: {
                 playerPokemon: allMembers[selectedMemberIdx],
                 cpuPokemon: cpuPokemon,
-                arena: arenas[selectedArenaIdx]
+                selectedArenaImage: arenas[selectedArenaIdx].bgImage
             }
         });
     };
@@ -130,7 +135,7 @@ const BattleSetup = () => {
                             onClick={() => setSelectedArenaIdx(idx)}
                             style={{ '--arena-color': arena.color }}
                         >
-                            <div className="arena-preview" style={{ background: arena.bg, backgroundSize: 'cover' }}></div>
+                            <div className="arena-preview" style={{ backgroundImage: `url(${arena.bgImage})`, backgroundSize: 'cover' }}></div>
                             <span>{arena.name}</span>
                         </div>
                     ))}
