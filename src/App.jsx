@@ -6,6 +6,8 @@ import AddPokemon from './components/addPokemon';
 import EditPokemon from './components/editPokemon';
 import TeamBuilder from './components/teamBuilder';
 import TeamGallery from './components/teamGallery';
+import BattleSetup from './components/battle/BattleSetup';
+import BattleArena from './components/battle/BattleArena';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/edit/:id" element={<EditPokemon />} />
           <Route path="/team-builder" element={<TeamBuilder />} />
           <Route path="/teams" element={<TeamGallery />} />
+          <Route path="/battle-setup" element={<BattleSetup />} />
+          <Route path="/battle" element={<BattleArena />} />
         </Routes>
       </div>
     </Router>

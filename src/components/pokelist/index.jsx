@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import PokeCard from "../pokeCard";
 import { Link } from "react-router-dom";
-import { Search, Plus, ChevronLeft, ChevronRight, Sparkles, Users, LayoutGrid } from "lucide-react";
+import { Search, Plus, ChevronLeft, ChevronRight, Sparkles, Users, LayoutGrid, Swords } from "lucide-react";
 
 const PokeList = () => {
     const [pokemons, setPokemons] = useState([]);
@@ -62,6 +62,9 @@ const PokeList = () => {
                             <button type="submit"><Search size={22} /></button>
                         </form>
                         <div style={{display: 'flex', gap: '15px'}}>
+                            <Link to="/battle-setup" className="add-btn" style={{background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)', boxShadow: '0 10px 25px rgba(239, 68, 68, 0.4)'}}>
+                                <Swords size={22} /> Battle Center
+                            </Link>
                             <Link to="/teams" className="add-btn" style={{background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)', boxShadow: '0 10px 25px rgba(6, 182, 212, 0.4)'}}>
                                 <LayoutGrid size={22} /> Galerie Équipes
                             </Link>
