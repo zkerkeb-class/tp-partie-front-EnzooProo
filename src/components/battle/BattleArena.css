@@ -1,0 +1,392 @@
+.battle-arena-container {
+  height: 100vh;
+  width: 100%;
+  background: #050505;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Battle Scene (Top 70%) --- */
+.battle-scene {
+  height: 70%;
+  position: relative;
+  perspective: 1000px;
+  overflow: hidden;
+}
+
+.battle-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+}
+
+/* Holographic Platforms */
+.holo-platform {
+  position: absolute;
+  width: 400px;
+  height: 150px;
+  transform: rotateX(65deg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.holo-platform.opponent {
+  top: 45%;
+  right: 15%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+  box-shadow: 0 0 50px rgba(139, 92, 246, 0.5), inset 0 0 30px rgba(139, 92, 246, 0.3);
+  border: 2px solid rgba(139, 92, 246, 0.6);
+  animation: platform-glow-purple 3s infinite alternate;
+}
+
+.holo-platform.player {
+  bottom: 15%;
+  left: 10%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, transparent 70%);
+  box-shadow: 0 0 50px rgba(6, 182, 212, 0.5), inset 0 0 30px rgba(6, 182, 212, 0.3);
+  border: 2px solid rgba(6, 182, 212, 0.6);
+  animation: platform-glow-cyan 3s infinite alternate;
+}
+
+@keyframes platform-glow-purple {
+  from { box-shadow: 0 0 30px rgba(139, 92, 246, 0.3); }
+  to { box-shadow: 0 0 70px rgba(139, 92, 246, 0.6); }
+}
+
+@keyframes platform-glow-cyan {
+  from { box-shadow: 0 0 30px rgba(6, 182, 212, 0.3); }
+  to { box-shadow: 0 0 70px rgba(6, 182, 212, 0.6); }
+}
+
+/* Pokemon Sprites */
+.sprite-container {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.5s ease;
+}
+
+.sprite-container.opponent {
+  top: 15%;
+  right: 18%;
+  animation: entrance-right 1s ease-out forwards;
+}
+
+.sprite-container.player {
+  bottom: 15%;
+  left: 15%;
+  animation: entrance-left 1s ease-out forwards;
+}
+
+.battle-pokemon {
+  width: 250px;
+  height: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
+}
+
+.floating {
+  animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes entrance-right {
+  from { transform: translateX(500px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes entrance-left {
+  from { transform: translateX(-500px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* --- HUDs --- */
+.battle-hud {
+  position: absolute;
+  width: 320px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  padding: 15px 20px;
+  border-radius: 4px;
+  border-left: 4px solid #fff;
+  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.battle-hud.opponent {
+  top: 20px;
+  right: 5%;
+  left: auto;
+  border-right: 4px solid #8b5cf6;
+  border-left: none;
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+  text-align: right;
+}
+
+.battle-hud.player {
+  left: 5%;
+  right: auto;
+  border-left: 4px solid #06b6d4;
+  border-right: none;
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+  text-align: left;
+}
+
+.hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 15px;
+}
+
+.opponent .hud-header {
+  flex-direction: row-reverse;
+}
+
+.hud-name {
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hud-level {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.hp-bar-wrapper {
+  width: 100%;
+  height: 12px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.2);
+  position: relative;
+}
+
+.hp-bar-fill-neon {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.hp-bar-fill-neon::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+.hp-text {
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-align: right;
+  margin-top: 4px;
+  color: #94a3b8;
+}
+
+/* --- Menu (Bottom 30%) --- */
+.battle-menu-container {
+  height: 30%;
+  background: #0a0a0c;
+  border-top: 2px solid rgba(255,255,255,0.1);
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  z-index: 200;
+}
+
+.dialog-box {
+  flex: 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  line-height: 1.4;
+  position: relative;
+}
+
+.dialog-box::before {
+  content: ">";
+  color: #06b6d4;
+  margin-right: 15px;
+  font-weight: 900;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.actions-grid-cyber {
+  width: 400px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+}
+
+.cyber-btn {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.cyber-btn:not(:disabled):hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255,255,255,0.1);
+}
+
+.cyber-btn.attack { border-left: 4px solid #ef4444; }
+.cyber-btn.heavy { border-left: 4px solid #f97316; }
+.cyber-btn.heal { border-left: 4px solid #10b981; }
+.cyber-btn.special { border-left: 4px solid #8b5cf6; }
+
+.cyber-btn.attack:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
+.cyber-btn.heavy:hover { background: rgba(249, 115, 22, 0.1); border-color: #f97316; }
+.cyber-btn.heal:hover { background: rgba(16, 185, 129, 0.1); border-color: #10b981; }
+.cyber-btn.special:hover { background: rgba(139, 92, 246, 0.1); border-color: #8b5cf6; }
+
+/* Effects */
+.battle-flash-overlay {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  z-index: 1000;
+  pointer-events: none;
+  animation: flash-out 0.2s forwards;
+}
+
+@keyframes flash-out {
+  from { opacity: 0.8; }
+  to { opacity: 0; }
+}
+
+/* Modal Overlay */
+.battle-end-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s forwards;
+}
+
+.end-card-cyber {
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 50px;
+  border-radius: 4px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+}
+
+.end-title {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.win-text { color: #06b6d4; text-shadow: 0 0 20px rgba(6, 182, 212, 0.5); }
+.lose-text { color: #ef4444; text-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+
+.end-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.pokedex-btn-cyber {
+  padding: 12px 30px;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.pokedex-btn-cyber:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* Animations Logic */
+.shake-anim { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.thrust-anim { animation: thrust 0.4s ease-in-out; }
+@keyframes thrust {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(50px); }
+  100% { transform: translateX(0); }
+}
+
+.thrust-reverse-anim { animation: thrust-reverse 0.4s ease-in-out; }
+@keyframes thrust-reverse {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-50px); }
+  100% { transform: translateX(0); }
+}

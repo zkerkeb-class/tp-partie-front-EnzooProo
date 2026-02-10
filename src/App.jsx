@@ -1,21 +1,31 @@
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import PokeList from './components/pokelist';
+import PokeDetail from './components/pokeDetail';
+import AddPokemon from './components/addPokemon';
+import EditPokemon from './components/editPokemon';
+import TeamBuilder from './components/teamBuilder';
+import TeamGallery from './components/teamGallery';
+import BattleSetup from './components/battle/BattleSetup';
+import BattleArena from './components/battle/BattleArena';
 
-import Title from './components/title'
-import Counter from './components/counter'
-import PokeList from './components/pokelist'
 function App() {
-
   return (
-    <div>
-      {/* <Title  label="Titre 1" />
-      <Title label="Titre 2" />
-      <Title label="Titre 3" />
-      <Title label="Titre 4" />
-      <Title/> */}
-      <Counter/>
-      <PokeList/>
-    </div>
-  )
+    <Router>
+      <div className="app-root-wrapper">
+        <Routes>
+          <Route path="/" element={<PokeList />} />
+          <Route path="/pokemon/:id" element={<PokeDetail />} />
+          <Route path="/add" element={<AddPokemon />} />
+          <Route path="/edit/:id" element={<EditPokemon />} />
+          <Route path="/team-builder" element={<TeamBuilder />} />
+          <Route path="/teams" element={<TeamGallery />} />
+          <Route path="/battle-setup" element={<BattleSetup />} />
+          <Route path="/battle" element={<BattleArena />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;
