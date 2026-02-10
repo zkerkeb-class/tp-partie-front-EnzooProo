@@ -58,6 +58,18 @@ const AddPokemon = () => {
         `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png`
     );
 
+    const pokemonTypes = [
+        "Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", 
+        "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Steel", "Fairy"
+    ];
+
+    const typeLabels = {
+        Normal: "Normal", Fire: "Feu", Water: "Eau", Grass: "Plante", Electric: "Électrik", 
+        Ice: "Glace", Fighting: "Combat", Poison: "Poison", Ground: "Sol", Flying: "Vol", 
+        Psychic: "Psy", Bug: "Insecte", Rock: "Roche", Ghost: "Spectre", Dragon: "Dragon", 
+        Steel: "Acier", Fairy: "Fée"
+    };
+
     return (
         <div className="add-page">
             <Link to="/" className="back-link"><ArrowLeft size={20} /> Retour au Pokedex</Link>
@@ -95,6 +107,31 @@ const AddPokemon = () => {
                                     onChange={e => setFormData({...formData, name: {...formData.name, english: e.target.value}})}
                                 />
                             </div>
+                        </div>
+
+                        <div className="form-group" style={{marginTop: '25px'}}>
+                            <label>Type Principal</label>
+                            <select 
+                                value={formData.type[0]} 
+                                onChange={e => setFormData({...formData, type: [e.target.value]})}
+                                style={{
+                                    background: 'rgba(15, 23, 42, 0.7)',
+                                    border: '2px solid rgba(255, 255, 255, 0.08)',
+                                    borderRadius: '16px',
+                                    padding: '18px 24px',
+                                    color: 'white',
+                                    fontSize: '1.05rem',
+                                    outline: 'none',
+                                    cursor: 'pointer',
+                                    appearance: 'none'
+                                }}
+                            >
+                                {pokemonTypes.map(type => (
+                                    <option key={type} value={type} style={{background: '#1e293b'}}>
+                                        {typeLabels[type]}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         
                         <div className="sprite-selector-container">

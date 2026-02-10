@@ -100,7 +100,7 @@ const PokeCard = ({ pokemon }) => {
                             <span className="attack-name">{attack.move}</span>
                             <span className="attack-desc">{attack.desc}</span>
                         </div>
-                        <span className="attack-damage">{attack.power}</span>
+                        <span className="attack-damage">{pokemon.base.Attack}</span>
                     </div>
                 </div>
 
