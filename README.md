@@ -18,3 +18,7 @@ If you are developing a production application, we recommend using TypeScript wi
 # Video Youtube
 
 Lien : https://www.youtube.com/watch?v=AHKb-BNEEA4
+
+# Amélioration 
+
+![alt text](image.png)

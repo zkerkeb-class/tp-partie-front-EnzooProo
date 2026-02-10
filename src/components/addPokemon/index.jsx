@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Info, BarChart3, Image as ImageIcon, Sparkles } from "
 
 const AddPokemon = () => {
     const navigate = useNavigate();
+    const [visibleCount, setVisibleCount] = useState(12);
     const [formData, setFormData] = useState({
         name: {
             english: "",
@@ -53,18 +54,9 @@ const AddPokemon = () => {
         Speed: "Vitesse"
     };
 
-    const pokemonSprites = [
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png",
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
-    ];
+    const pokemonSprites = Array.from({ length: 151 }, (_, i) => 
+        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${i + 1}.png`
+    );
 
     return (
         <div className="add-page">
@@ -108,7 +100,7 @@ const AddPokemon = () => {
                         <div className="sprite-selector-container">
                             <label style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontWeight: 800, fontSize: '0.85rem', textTransform: 'uppercase'}}><ImageIcon size={16} /> Choisir un Hologramme</label>
                             <div className="sprite-grid">
-                                {pokemonSprites.map((url) => (
+                                {pokemonSprites.slice(0, visibleCount).map((url) => (
                                     <div 
                                         key={url}
                                         className={`sprite-option ${formData.image === url ? 'selected' : ''}`}
@@ -118,6 +110,26 @@ const AddPokemon = () => {
                                     </div>
                                 ))}
                             </div>
+                            
+                            {visibleCount < pokemonSprites.length && (
+                                <button 
+                                    type="button"
+                                    onClick={() => setVisibleCount(prev => Math.min(prev + 24, 151))}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: '#94a3b8',
+                                        textDecoration: 'underline',
+                                        fontWeight: 700,
+                                        cursor: 'pointer',
+                                        marginTop: '15px',
+                                        alignSelf: 'center',
+                                        fontSize: '0.9rem'
+                                    }}
+                                >
+                                    Voir plus d'hologrammes
+                                </button>
+                            )}
                         </div>
                     </div>
                     
